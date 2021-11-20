@@ -1,3 +1,7 @@
+# app.py
+# connect to Infura node and check balance of an address
+
+
 from dotenv import load_dotenv
 import os
 from web3 import Web3
