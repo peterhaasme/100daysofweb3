@@ -2,7 +2,6 @@
 # connect to Avax node and check balance of an address on C chain
 
 
-
 from web3 import Web3
 
 
