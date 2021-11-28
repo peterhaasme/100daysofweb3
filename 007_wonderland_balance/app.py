@@ -4,7 +4,8 @@
 # dash app + morph theme DONE
 # set up grid DONE
 # enter wallet address and validate hex
-# balances for TIME, MEMO, wMEMO, bonding rewards
+# balances for TIME, MEMO, wMEMO DONE
+# bonding rewards
 # lookup market value of assets and calculate portfolio value
 
 import dash
@@ -36,12 +37,22 @@ wallet_input = [
         width=2,
     ),
     dbc.Col(
-        children=dbc.Input(
-            id='wallet_input',
-            value='0xc2306a06993ebfb4a66b189c98fd1d5f03855349',
-            type='text',
-            autofocus=True,
-        ),
+        children=[
+            dbc.Input(
+                id='wallet_input',
+                value='0xc2306a06993ebfb4a66b189c98fd1d5f03855349',
+                type='text',
+                autofocus=True
+            ),
+            dbc.FormFeedback(
+                children="Valid address",
+                type="valid"
+            ),
+            dbc.FormFeedback(
+                children="Invalid address",
+                type="invalid",
+            ),
+        ],
         width=10
     )
 ]
@@ -154,6 +165,19 @@ app.layout = dbc.Container([
 ])
 
 # Callback
+
+
+@app.callback(
+    Output("wallet_input", "valid"),
+    Output("wallet_input", "invalid"),
+    Input("wallet_input", "value"),
+)
+def check_validity(value):
+    ''' Validate wallet address
+    '''
+    if value:
+        return Web3.isAddress(value), not Web3.isAddress(value)
+    return False, False
 
 
 def get_token_balance(wal_addr):
