@@ -2,7 +2,7 @@
 # enter wallet address into web app -> generate wonderland portfolio value
 
 # dash app + morph theme DONE
-# set up grid
+# set up grid DONE
 # enter wallet address and validate hex
 # balances for TIME, MEMO, wMEMO, bonding rewards
 # lookup market value of assets and calculate portfolio value
@@ -28,20 +28,127 @@ web3 = Web3(Web3.HTTPProvider(INFURA_URL))
 # Dash instance
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MORPH])
 
+# Layout components
+wallet_input = [
+    dbc.Label(
+        children='Enter Wallet Address',
+        html_for='wallet_input',
+        width=2,
+    ),
+    dbc.Col(
+        children=dbc.Input(
+            id='wallet_input',
+            value='0xc2306a06993ebfb4a66b189c98fd1d5f03855349',
+            type='text',
+            autofocus=True,
+        ),
+        width=10
+    )
+]
+
+time_balance = [
+    dbc.Col(
+        children='TIME balance',
+        width=2
+    ),
+    dbc.Col(
+        children='1.5',
+        width=2
+    ),
+    dbc.Col(
+        children='TIME price',
+        width=2
+    ),
+    dbc.Col(
+        children='$9000',
+        width=2
+    ),
+    dbc.Col(
+        children='TIME value',
+        width=2
+    ),
+    dbc.Col(
+        children='$13,500',
+        width=2
+    )
+]
+
+memo_balance = [
+    dbc.Col(
+        children='MEMO balance',
+        width=2
+    ),
+    dbc.Col(
+        children='1.5',
+        width=2
+    ),
+    dbc.Col(
+        children='MEMO price',
+        width=2
+    ),
+    dbc.Col(
+        children='$9000',
+        width=2
+    ),
+    dbc.Col(
+        children='MEMO value',
+        width=2
+    ),
+    dbc.Col(
+        children='$13,500',
+        width=2
+    )
+]
+
+wmemo_balance = [
+    dbc.Col(
+        children='wMEMO balance',
+        width=2
+    ),
+    dbc.Col(
+        children='1.5',
+        width=2
+    ),
+    dbc.Col(
+        children='wMEMO price',
+        width=2
+    ),
+    dbc.Col(
+        children='$9000',
+        width=2
+    ),
+    dbc.Col(
+        children='wMEMO value',
+        width=2
+    ),
+    dbc.Col(
+        children='$13,500',
+        width=2
+    )
+]
+
 # Layout
 app.layout = dbc.Container([
     dbc.Row(
-        children=dbc.Col(html.H1('Wonderland Portfolio Balance'),
-        class_name = 'text-center'
-        ),
+        children=dbc.Col(html.H1('Wonderland Portfolio Balance')),
+        class_name='text-center mt-3'
     ),
-    html.Div([
-        "Enter Wallet Address: ",
-        dcc.Input(
-            id='my-input',
-            value='0xc2306a06993ebfb4a66b189c98fd1d5f03855349',
-            type='text')
-    ]),
+    dbc.Row(
+        children=wallet_input,
+        class_name='my-4'
+    ),
+    dbc.Row(
+        children=time_balance,
+        class_name='text-center h4 my-3 p-3 bg-light rounded-3'
+    ),
+    dbc.Row(
+        children=memo_balance,
+        class_name='text-center h4 my-3 p-3 bg-light rounded-3'
+    ),
+    dbc.Row(
+        children=wmemo_balance,
+        class_name='text-center h4 my-3 p-3 bg-light rounded-3'
+    ),
     html.Br(),
     html.Div(id='my-output'),
 ])
@@ -65,13 +172,14 @@ def get_token_balance(wal_addr):
     balance = web3.fromWei(balance_wei, 'ether')
     return balance
 
+
 @app.callback(
     Output(
         component_id='my-output',
         component_property='children'
         ),
     Input(
-        component_id='my-input',
+        component_id='wallet_input',
         component_property='value'
         ),
 )
