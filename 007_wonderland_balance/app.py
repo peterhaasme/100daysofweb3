@@ -32,7 +32,7 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MORPH])
 # Layout components
 wallet_input = [
     dbc.Label(
-        children='Enter Wallet Address',
+        children=html.H5('Enter Wallet Address'),
         html_for='wallet_input',
         width=2,
     ),
