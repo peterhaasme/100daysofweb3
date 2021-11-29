@@ -144,6 +144,12 @@ wmemo_balance = [
     )
 ]
 
+total_value = [
+    dbc.Col(
+        children='Total Value = $10,000'
+    )
+]
+
 interval = dcc.Interval(
             id='price_interval',
             interval=60000, # 60000ms=1min
@@ -180,8 +186,12 @@ app.layout = dbc.Container([
         class_name='text-center h4 my-3 p-3 bg-light rounded-3'
     ),
     dbc.Row(
+        children=total_value,
+        class_name='text-center text-light h3 my-3 p-3 bg-info rounded-3'
+    ),
+    dbc.Row(
         children=credits,
-        class_name='my-3 p-3'
+        class_name=''
     ),
     interval,
     html.Br(),
