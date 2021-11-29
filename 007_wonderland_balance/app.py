@@ -17,6 +17,7 @@ from dash.dependencies import Input, Output
 from dotenv import load_dotenv
 import json
 import os
+from pycoingecko import CoinGeckoAPI
 from web3 import Web3
 
 # import infura_url from .env or use your own
@@ -28,6 +29,9 @@ web3 = Web3(Web3.HTTPProvider(INFURA_URL))
 
 # Dash instance
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MORPH])
+
+# Coingecko API instance
+cg = CoinGeckoAPI()
 
 # Layout components
 wallet_input = [
@@ -71,7 +75,8 @@ time_balance = [
         width=2
     ),
     dbc.Col(
-        children='$9000',
+        id='time_price',
+        children='',
         width=2
     ),
     dbc.Col(
@@ -98,7 +103,8 @@ memo_balance = [
         width=2
     ),
     dbc.Col(
-        children='$9000',
+        id='memo_price',
+        children='',
         width=2
     ),
     dbc.Col(
@@ -138,6 +144,19 @@ wmemo_balance = [
     )
 ]
 
+interval = dcc.Interval(
+            id='price_interval',
+            interval=60000, # 60000ms=1min
+            n_intervals=0
+        )
+
+credits = dbc.Col(
+    dcc.Markdown('''
+        ##### Credits
+        Price Data - [Coingecko](https://www.coingecko.com/en/api)
+    ''')
+)
+
 # Layout
 app.layout = dbc.Container([
     dbc.Row(
@@ -160,6 +179,11 @@ app.layout = dbc.Container([
         children=wmemo_balance,
         class_name='text-center h4 my-3 p-3 bg-light rounded-3'
     ),
+    dbc.Row(
+        children=credits,
+        class_name='my-3 p-3'
+    ),
+    interval,
     html.Br(),
     html.Div(id='my-output'),
 ])
@@ -168,9 +192,18 @@ app.layout = dbc.Container([
 
 
 @app.callback(
-    Output("wallet_input", "valid"),
-    Output("wallet_input", "invalid"),
-    Input("wallet_input", "value"),
+    Output(
+        component_id="wallet_input",
+        component_property="valid"
+    ),
+    Output(
+        component_id="wallet_input",
+        component_property="invalid"
+    ),
+    Input(
+        component_id="wallet_input",
+        component_property="value"
+    ),
 )
 def check_validity(value):
     ''' Validate wallet address
@@ -179,6 +212,28 @@ def check_validity(value):
         return Web3.isAddress(value), not Web3.isAddress(value)
     return False, False
 
+
+@app.callback(
+    Output(
+        component_id='time_price',
+        component_property='children'
+    ),
+    Output(
+        component_id='memo_price',
+        component_property='children'
+    ),
+    Input(
+        component_id='price_interval',
+        component_property='n_intervals'
+    ),
+)
+def time_price(n):
+    time_price = cg.get_price(
+        ids='wonderland',
+        vs_currencies='usd'
+    )
+    time_price_2 = '$' + str(time_price['wonderland']['usd'])
+    return time_price_2, time_price_2
 
 def get_token_balance(wal_addr):
     ''' Get token balance in a wallet address
