@@ -3,7 +3,7 @@
 
 # dash app + morph theme DONE
 # set up grid DONE
-# enter wallet address and validate hex
+# enter wallet address and validate hex DONE
 # balances for TIME, MEMO, wMEMO DONE
 # bonding rewards
 # lookup market value of assets and calculate portfolio value
@@ -14,9 +14,7 @@ from dash import html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
-#from dotenv import load_dotenv
 import json
-#import os
 from pycoingecko import CoinGeckoAPI
 from token_info import tokens
 from web3 import Web3
@@ -163,6 +161,13 @@ credits = dbc.Col(
     ''')
 )
 
+notes = dbc.Col(
+    dcc.Markdown('''
+        ##### Notes
+        - Refresh every 60s
+    ''')
+)
+
 # Layout
 app.layout = dbc.Container([
     dbc.Row(
@@ -191,6 +196,10 @@ app.layout = dbc.Container([
     ),
     dbc.Row(
         children=credits,
+        class_name=''
+    ),
+    dbc.Row(
+        children=notes,
         class_name=''
     ),
     interval,
@@ -223,13 +232,14 @@ def check_validity(value):
     return False, False
 
 
-def get_token_balance(wal_addr):
+def get_token_balance(token, wal_addr):
     ''' Get token balance in a wallet address
 
     Keyword arguments:
+    token - token symbol
     wal_addr - wallet address
     '''
-    ctrct_addr = tokens['time']['address']
+    ctrct_addr = tokens[token]['address']
     checksum_address = web3.toChecksumAddress(ctrct_addr)
     wal_checksum = web3.toChecksumAddress(wal_addr)
     abi = tokens['time']['abi']
@@ -276,7 +286,7 @@ def time_value(n, valid, value):
         )
         time_price_2 = time_price['wonderland']['usd'] # type float
         time_price_3 = '$' + str(time_price_2)
-        balance = get_token_balance(wal_addr=value)
+        balance = get_token_balance(token='time', wal_addr=value)
         time_value = '$' + str(time_price_2*float(balance))
     else:
         time_price_3 = '$0'
