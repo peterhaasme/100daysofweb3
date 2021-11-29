@@ -253,11 +253,11 @@ def get_token_balance(token, wal_addr):
 
 @app.callback(
     Output(
-        component_id='time_price',
+        component_id='time_balance',
         component_property='children'
     ),
     Output(
-        component_id='time_balance',
+        component_id='time_price',
         component_property='children'
     ),
     Output(
@@ -293,7 +293,7 @@ def time_value(n, valid, value):
         time_price_3 = '$0'
         balance = '0'
         time_value = '$0'
-    return time_price_3, balance, time_value
+    return balance, time_price_3, time_value
 
 if __name__ == '__main__':
     app.run_server(debug=True)
