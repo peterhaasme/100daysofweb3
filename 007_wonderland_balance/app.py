@@ -14,6 +14,7 @@ from dash import html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
+from decimal import Decimal
 import json
 from pycoingecko import CoinGeckoAPI
 from token_info import tokens
@@ -285,9 +286,9 @@ def time_value(n, valid, value):
             vs_currencies='usd'
         )
         time_price_2 = time_price['wonderland']['usd'] # type float
-        time_price_3 = '$' + str(time_price_2)
-        balance = get_token_balance(token='time', wal_addr=value)
-        time_value = '$' + str(time_price_2*float(balance))
+        time_price_3 = "${:,.2f}".format(time_price_2)
+        balance = round(get_token_balance(token='time', wal_addr=value), 2)
+        time_value = "${:,.2f}".format(time_price_2*float(balance))
     else:
         time_price_3 = '$0'
         balance = '0'
