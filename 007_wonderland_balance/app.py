@@ -97,55 +97,67 @@ time_balance = [
 memo_balance = [
     dbc.Col(
         children='MEMO balance',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         children='1.5',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         children='MEMO price',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         id='memo_price',
-        children='',
-        width=2
+        children='$7,000',
+        width=6,
+        lg=2
     ),
     dbc.Col(
         children='MEMO value',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         children='$13,500',
-        width=2
+        width=6,
+        lg=2
     )
 ]
 
 wmemo_balance = [
     dbc.Col(
         children='wMEMO balance',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         children='1.5',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         children='wMEMO price',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         children='$9000',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         children='wMEMO value',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         children='$13,500',
-        width=2
+        width=6,
+        lg=2
     )
 ]
 
