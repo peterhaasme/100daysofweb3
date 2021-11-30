@@ -61,30 +61,36 @@ wallet_input = [
 time_balance = [
     dbc.Col(
         children='TIME balance',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         id='time_balance',
         children='',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         children='TIME price',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         id='time_price',
         children='',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         children='TIME value',
-        width=2
+        width=6,
+        lg=2
     ),
     dbc.Col(
         id='time_value',
         children='',
-        width=2
+        width=6,
+        lg=2
     )
 ]
 
