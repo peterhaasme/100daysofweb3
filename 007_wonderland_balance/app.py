@@ -14,21 +14,31 @@ from dash import html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
+from dotenv import load_dotenv
 import json
-from pycoingecko import CoinGeckoAPI
+# from pycoingecko import CoinGeckoAPI
+import os
+import requests
 from token_info import tokens
 from web3 import Web3
+
+# INSTANCES ###
 
 # Dash instance
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MORPH])
 
+# import nomics API key from .env
+load_dotenv()
+NOMICS_API_KEY = os.getenv('NOMICS_API_KEY')
+
 # Coingecko API instance
-cg = CoinGeckoAPI()
+#cg = CoinGeckoAPI()
 
 # create Avax connection
 avalanche_url = 'https://api.avax.network/ext/bc/C/rpc'
 web3 = Web3(Web3.HTTPProvider(avalanche_url))
 
+# LAYOUT ###
 # Layout components
 wallet_input = [
     dbc.Label(
@@ -196,7 +206,7 @@ notes = dbc.Col(
     ''')
 )
 
-# Layout
+# Page Layout
 app.layout = dbc.Container([
     dbc.Row(
         children=dbc.Col(html.H1('Wonderland Portfolio Balance')),
@@ -235,7 +245,7 @@ app.layout = dbc.Container([
     html.Div(id='my-output'),
 ])
 
-# Callback
+# CALLBACKS ###
 
 
 @app.callback(
@@ -279,6 +289,21 @@ def get_token_balance(token, wal_addr, currency):
     return balance
 
 
+def get_token_price(token_id):
+    ''' Get price of token
+
+    Keyword arguments:
+    token_id - nomics token id
+    '''
+    url = 'https://api.nomics.com/v1/currencies/ticker'
+    payload = {
+        'key': NOMICS_API_KEY,
+        'ids': token_id
+    }
+    response = requests.get(url, params=payload)
+    return response.json()[0]['price']
+
+
 @app.callback(
     Output(
         component_id='time_balance',
@@ -309,112 +334,115 @@ def time_value(n, valid, value):
     ''' If the wallet address is valid populate TIME balance, price, value
     '''
     if valid:
-        time_price = cg.get_price(
-            ids='wonderland',
-            vs_currencies='usd'
+        price = get_token_price(
+            token_id='TIME5'
         )
-        time_price_2 = time_price['wonderland']['usd'] # type float
-        time_price_3 = "${:,.2f}".format(time_price_2)
-        balance = round(get_token_balance(token='time', wal_addr=value,
-                        currency='gwei'), 2)
-        time_value = "${:,.2f}".format(time_price_2*float(balance))
-    else:
-        time_price_3 = '$0'
-        balance = '0'
-        time_value = '$0'
-    return balance, time_price_3, time_value
-
-
-@app.callback(
-    Output(
-        component_id='memo_balance',
-        component_property='children'
-    ),
-    Output(
-        component_id='memo_price',
-        component_property='children'
-    ),
-    Output(
-        component_id='memo_value',
-        component_property='children'
-    ),
-    Input(
-        component_id='price_interval',
-        component_property='n_intervals'
-    ),
-    Input(
-        component_id='wallet_input',
-        component_property='valid'
-    ),
-    Input(
-        component_id='wallet_input',
-        component_property='value'
-    ),
-)
-def memo_value(n, valid, value):
-    ''' If the wallet address is valid populate MEMO balance, price, value
-    '''
-    if valid:
-        memo_price = cg.get_price(
-            ids='wonderland',
-            vs_currencies='usd'
-        ) # return dictionary
-        memo_price_2 = memo_price['wonderland']['usd'] # type float
-        memo_price_3 = "${:,.2f}".format(memo_price_2)
-        balance = round(get_token_balance(token='memo', wal_addr=value,
-                        currency='gwei'), 2)
-        memo_value = "${:,.2f}".format(memo_price_2*float(balance))
-    else:
-        memo_price_3 = '$0'
-        balance = '0'
-        memo_value = '$0'
-    return balance, memo_price_3, memo_value
-
-
-@app.callback(
-    Output(
-        component_id='wmemo_balance',
-        component_property='children'
-    ),
-    Output(
-        component_id='wmemo_price',
-        component_property='children'
-    ),
-    Output(
-        component_id='wmemo_value',
-        component_property='children'
-    ),
-    Input(
-        component_id='price_interval',
-        component_property='n_intervals'
-    ),
-    Input(
-        component_id='wallet_input',
-        component_property='valid'
-    ),
-    Input(
-        component_id='wallet_input',
-        component_property='value'
-    ),
-)
-def wmemo_value(n, valid, value):
-    ''' If the wallet address is valid populate wMEMO balance, price, value
-    '''
-    if valid:
-        time_price = cg.get_price(
-            ids='wonderland',
-            vs_currencies='usd'
+        price_show = "${:,.2f}".format(float(price))
+        balance = get_token_balance(
+            token='time',
+            wal_addr=value,
+            currency='gwei'
         )
-        time_price_2 = 4.5 * 4.65 * time_price['wonderland']['usd']  # type float
-        time_price_3 = "${:,.2f}".format(time_price_2)
-        balance = round(get_token_balance(token='wmemo', wal_addr=value,
-                        currency='ether'), 5)
-        wmemo_value = "${:,.2f}".format(time_price_2*float(balance))
+        balance_show = round(balance, 2)
+        value = float(price)*float(balance)
+        value_show = "${:,.2f}".format(value)
     else:
-        time_price_3 = '$0'
-        balance = '0'
-        wmemo_value = '$0'
-    return balance, time_price_3, wmemo_value
+        price_show = '$0'
+        balance_show = '0'
+        value_show = '$0'
+    return price_show, balance_show, value_show
+
+
+# @app.callback(
+#     Output(
+#         component_id='memo_balance',
+#         component_property='children'
+#     ),
+#     Output(
+#         component_id='memo_price',
+#         component_property='children'
+#     ),
+#     Output(
+#         component_id='memo_value',
+#         component_property='children'
+#     ),
+#     Input(
+#         component_id='price_interval',
+#         component_property='n_intervals'
+#     ),
+#     Input(
+#         component_id='wallet_input',
+#         component_property='valid'
+#     ),
+#     Input(
+#         component_id='wallet_input',
+#         component_property='value'
+#     ),
+# )
+# def memo_value(n, valid, value):
+#     ''' If the wallet address is valid populate MEMO balance, price, value
+#     '''
+#     if valid:
+#         memo_price = cg.get_price(
+#             ids='wonderland',
+#             vs_currencies='usd'
+#         ) # return dictionary
+#         memo_price_2 = memo_price['wonderland']['usd'] # type float
+#         memo_price_3 = "${:,.2f}".format(memo_price_2)
+#         balance = round(get_token_balance(token='memo', wal_addr=value,
+#                         currency='gwei'), 2)
+#         memo_value = "${:,.2f}".format(memo_price_2*float(balance))
+#     else:
+#         memo_price_3 = '$0'
+#         balance = '0'
+#         memo_value = '$0'
+#     return balance, memo_price_3, memo_value
+#
+#
+# @app.callback(
+#     Output(
+#         component_id='wmemo_balance',
+#         component_property='children'
+#     ),
+#     Output(
+#         component_id='wmemo_price',
+#         component_property='children'
+#     ),
+#     Output(
+#         component_id='wmemo_value',
+#         component_property='children'
+#     ),
+#     Input(
+#         component_id='price_interval',
+#         component_property='n_intervals'
+#     ),
+#     Input(
+#         component_id='wallet_input',
+#         component_property='valid'
+#     ),
+#     Input(
+#         component_id='wallet_input',
+#         component_property='value'
+#     ),
+# )
+# def wmemo_value(n, valid, value):
+#     ''' If the wallet address is valid populate wMEMO balance, price, value
+#     '''
+#     if valid:
+#         time_price = cg.get_price(
+#             ids='wonderland',
+#             vs_currencies='usd'
+#         )
+#         time_price_2 = 4.5 * 4.65 * time_price['wonderland']['usd']  # type float
+#         time_price_3 = "${:,.2f}".format(time_price_2)
+#         balance = round(get_token_balance(token='wmemo', wal_addr=value,
+#                         currency='ether'), 5)
+#         wmemo_value = "${:,.2f}".format(time_price_2*float(balance))
+#     else:
+#         time_price_3 = '$0'
+#         balance = '0'
+#         wmemo_value = '$0'
+#     return balance, time_price_3, wmemo_value
 
 
 if __name__ == '__main__':
