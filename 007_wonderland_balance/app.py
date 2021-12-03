@@ -14,7 +14,6 @@ from dash import html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
-from decimal import Decimal
 import json
 from pycoingecko import CoinGeckoAPI
 from token_info import tokens
@@ -174,7 +173,7 @@ total_value = [
 
 interval = dcc.Interval(
             id='price_interval',
-            interval=60000, # 60000ms=1min
+            interval=60000,  # 60000ms=1min
             n_intervals=0
         )
 
@@ -189,6 +188,11 @@ notes = dbc.Col(
     dcc.Markdown('''
         ##### Notes
         - Refresh every 60s
+        - Test addresses:
+            - TIME -> 0x104d5ebb38af1ae5eb469b86922d1f10808eb35f
+            - MEMO -> 0xe7ca3ff841ee183e69a38671927290a34de49567
+            - wMEMO -> 0xdcf6f52faf50d9e0b6df301003b90979d232400e
+        - wMEMO price = 4.5 * index * MEMO price
     ''')
 )
 
@@ -401,7 +405,7 @@ def wmemo_value(n, valid, value):
             ids='wonderland',
             vs_currencies='usd'
         )
-        time_price_2 = time_price['wonderland']['usd'] # type float
+        time_price_2 = 4.5 * 4.65 * time_price['wonderland']['usd']  # type float
         time_price_3 = "${:,.2f}".format(time_price_2)
         balance = round(get_token_balance(token='wmemo', wal_addr=value,
                         currency='ether'), 5)
@@ -409,8 +413,9 @@ def wmemo_value(n, valid, value):
     else:
         time_price_3 = '$0'
         balance = '0'
-        memo_value = '$0'
+        wmemo_value = '$0'
     return balance, time_price_3, wmemo_value
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
