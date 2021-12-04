@@ -16,7 +16,6 @@ from dash.dependencies import Input, Output
 
 from dotenv import load_dotenv
 import json
-from pycoingecko import CoinGeckoAPI
 import os
 import requests
 from token_info import tokens
@@ -30,9 +29,6 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MORPH])
 # import nomics API key from .env
 load_dotenv()
 NOMICS_API_KEY = os.getenv('NOMICS_API_KEY')
-
-# Coingecko API instance
-cg = CoinGeckoAPI()
 
 # create Avax connection
 avalanche_url = 'https://api.avax.network/ext/bc/C/rpc'
