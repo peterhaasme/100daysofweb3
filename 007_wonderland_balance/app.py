@@ -187,7 +187,7 @@ interval = dcc.Interval(
 credits = dbc.Col(
     dcc.Markdown('''
         ##### Credits
-        Price Data - [Coingecko](https://www.coingecko.com/en/api)
+        Price Data - [Nomics](https://p.nomics.com/cryptocurrency-bitcoin-api)
     ''')
 )
 
@@ -199,7 +199,7 @@ notes = dbc.Col(
             - TIME -> 0x104d5ebb38af1ae5eb469b86922d1f10808eb35f
             - MEMO -> 0xe7ca3ff841ee183e69a38671927290a34de49567
             - wMEMO -> 0xdcf6f52faf50d9e0b6df301003b90979d232400e
-        - wMEMO price = 4.5 * index * MEMO price
+        - Coming soon: bonding rewards balance
     ''')
 )
 
