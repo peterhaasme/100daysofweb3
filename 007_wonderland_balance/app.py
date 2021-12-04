@@ -16,7 +16,7 @@ from dash.dependencies import Input, Output
 
 from dotenv import load_dotenv
 import json
-# from pycoingecko import CoinGeckoAPI
+from pycoingecko import CoinGeckoAPI
 import os
 import requests
 from token_info import tokens
@@ -32,7 +32,7 @@ load_dotenv()
 NOMICS_API_KEY = os.getenv('NOMICS_API_KEY')
 
 # Coingecko API instance
-#cg = CoinGeckoAPI()
+cg = CoinGeckoAPI()
 
 # create Avax connection
 avalanche_url = 'https://api.avax.network/ext/bc/C/rpc'
@@ -111,7 +111,7 @@ memo_balance = [
     ),
     dbc.Col(
         id='memo_balance',
-        children='1.5',
+        children='',
         width=6,
         lg=2
     ),
@@ -122,7 +122,7 @@ memo_balance = [
     ),
     dbc.Col(
         id='memo_price',
-        children='$7,000',
+        children='',
         width=6,
         lg=2
     ),
@@ -133,7 +133,7 @@ memo_balance = [
     ),
     dbc.Col(
         id='memo_value',
-        children='$13,500',
+        children='',
         width=6,
         lg=2
     )
@@ -304,6 +304,27 @@ def get_token_price(token_id):
     return response.json()[0]['price']
 
 
+# def disp_token_vals(valid, value, token, currency, token_id):
+#     if valid:
+#         balance = get_token_balance(
+#             token=token,
+#             wal_addr=value,
+#             currency=currency
+#         )
+#         balance_show = round(balance, 2)
+#         price = get_token_price(
+#             token_id=token_id
+#         )
+#         price_show = "${:,.2f}".format(float(price))
+#         value = float(price)*float(balance)
+#         value_show = "${:,.2f}".format(value)
+#     else:
+#         balance_show = '0'
+#         price_show = '$0'
+#         value_show = '$0'
+#     return balance_show, price_show, value_show
+
+
 @app.callback(
     Output(
         component_id='time_balance',
@@ -333,24 +354,82 @@ def get_token_price(token_id):
 def time_value(n, valid, value):
     ''' If the wallet address is valid populate TIME balance, price, value
     '''
+    # disp_token_vals(
+    #     valid=valid,
+    #     value=value,
+    #     token='time',
+    #     currency='gwei',
+    #     token_id='TIME5'
+    # )
     if valid:
-        price = get_token_price(
-            token_id='TIME5'
-        )
-        price_show = "${:,.2f}".format(float(price))
         balance = get_token_balance(
             token='time',
             wal_addr=value,
             currency='gwei'
         )
         balance_show = round(balance, 2)
+        price = get_token_price(
+            token_id='TIME5'
+        )
+        price_show = "${:,.2f}".format(float(price))
         value = float(price)*float(balance)
         value_show = "${:,.2f}".format(value)
     else:
-        price_show = '$0'
         balance_show = '0'
+        price_show = '$0'
         value_show = '$0'
-    return price_show, balance_show, value_show
+    return balance_show, price_show, value_show
+
+
+@app.callback(
+    Output(
+        component_id='memo_balance',
+        component_property='children'
+    ),
+    Output(
+        component_id='memo_price',
+        component_property='children'
+    ),
+    Output(
+        component_id='memo_value',
+        component_property='children'
+    ),
+    Input(
+        component_id='price_interval',
+        component_property='n_intervals'
+    ),
+    Input(
+        component_id='wallet_input',
+        component_property='valid'
+    ),
+    Input(
+        component_id='wallet_input',
+        component_property='value'
+    ),
+)
+def memo_value(n, valid, value):
+    ''' If the wallet address is valid populate MEMO balance, price, value
+    MEMO price = TIME price
+    '''
+    if valid:
+        memo_balance = get_token_balance(
+            token='memo',
+            wal_addr=value,
+            currency='gwei'
+        )
+        memo_balance_show = round(memo_balance, 2)
+        memo_price = get_token_price(
+            token_id='TIME4'
+        )
+        memo_price_show = "${:,.2f}".format(float(memo_price))
+        value = float(memo_price)*float(memo_balance)
+        memo_value_show = "${:,.2f}".format(memo_value)
+    else:
+        memo_balance_show = '0'
+        memo_price_show = '$0'
+        memo_value_show = '$0'
+    return memo_balance_show, memo_price_show, memo_value_show
+
 
 
 # @app.callback(
@@ -381,6 +460,7 @@ def time_value(n, valid, value):
 # )
 # def memo_value(n, valid, value):
 #     ''' If the wallet address is valid populate MEMO balance, price, value
+#     MEMO value = TIME value
 #     '''
 #     if valid:
 #         memo_price = cg.get_price(
@@ -397,8 +477,8 @@ def time_value(n, valid, value):
 #         balance = '0'
 #         memo_value = '$0'
 #     return balance, memo_price_3, memo_value
-#
-#
+
+
 # @app.callback(
 #     Output(
 #         component_id='wmemo_balance',
