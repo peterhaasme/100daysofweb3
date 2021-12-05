@@ -24,7 +24,7 @@ from web3 import Web3
 # INSTANCES ###
 
 # Dash instance
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MORPH])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
 
 # import nomics API key from .env
 load_dotenv()
@@ -48,7 +48,8 @@ wallet_input = [
                 id='wallet_input',
                 value='0x104d5ebb38af1ae5eb469b86922d1f10808eb35f',
                 type='text',
-                autofocus=True
+                autofocus=True,
+                class_name='bg-dark'
             ),
             dbc.FormFeedback(
                 children="Valid address",
