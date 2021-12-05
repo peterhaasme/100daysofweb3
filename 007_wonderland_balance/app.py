@@ -40,13 +40,13 @@ wallet_input = [
     dbc.Label(
         children=html.H5('Enter Wallet Address'),
         html_for='wallet_input',
-        width=2,
+        width=3,
     ),
     dbc.Col(
         children=[
             dbc.Input(
                 id='wallet_input',
-                value='0x104d5ebb38af1ae5eb469b86922d1f10808eb35f',
+                placeholder='0x104d5ebb38af1ae5eb469b86922d1f10808eb35f',
                 type='text',
                 autofocus=True,
                 class_name='bg-dark'
@@ -60,7 +60,7 @@ wallet_input = [
                 type="invalid",
             ),
         ],
-        width=10
+        width=9
     )
 ]
 
@@ -195,11 +195,11 @@ credits = dbc.Col(
 notes = dbc.Col(
     dcc.Markdown('''
         ##### Notes
-        - Refresh every 60s
         - Test addresses:
             - TIME -> 0x104d5ebb38af1ae5eb469b86922d1f10808eb35f
             - MEMO -> 0xe7ca3ff841ee183e69a38671927290a34de49567
             - wMEMO -> 0xdcf6f52faf50d9e0b6df301003b90979d232400e
+        - Prices refresh every 60s
         - Coming soon: bonding rewards balance
     ''')
 )
@@ -216,19 +216,19 @@ app.layout = dbc.Container([
     ),
     dbc.Row(
         children=time_balance,
-        class_name='text-center h4 my-3 p-3 bg-light rounded-3'
+        class_name='text-center h5 my-3 p-3 bg-light rounded-3'
     ),
     dbc.Row(
         children=memo_balance,
-        class_name='text-center h4 my-3 p-3 bg-light rounded-3'
+        class_name='text-center h5 my-3 p-3 bg-light rounded-3'
     ),
     dbc.Row(
         children=wmemo_balance,
-        class_name='text-center h4 my-3 p-3 bg-light rounded-3'
+        class_name='text-center h5 my-3 p-3 bg-light rounded-3'
     ),
     dbc.Row(
         children=total_value,
-        class_name='text-center text-light h3 my-3 p-3 bg-info rounded-3'
+        class_name='text-center text-light h4 my-3 p-3 bg-info rounded-3'
     ),
     dbc.Row(
         children=credits,
@@ -395,7 +395,7 @@ def display_balances(valid, value, n):
         time_value_show = '$0'
         memo_value_show = '$0'
         wmemo_value_show = '$0'
-        total_value_show = '$0'
+        total_value_show = 'Total Value = $0'
 
     # Return values
     return (time_bal_show, memo_bal_show, wmemo_bal_show, time_price_show,
