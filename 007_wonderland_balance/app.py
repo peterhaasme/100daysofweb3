@@ -1,13 +1,6 @@
 # 007_wonderland_balance/app.py
 # enter wallet address into web app -> generate wonderland portfolio value
 
-# dash app + morph theme DONE
-# set up grid DONE
-# enter wallet address and validate hex DONE
-# balances for TIME, MEMO, wMEMO DONE
-# bonding rewards
-# lookup market value of assets and calculate portfolio value
-
 import dash
 from dash import dcc
 from dash import html
@@ -238,9 +231,7 @@ app.layout = dbc.Container([
         children=notes,
         class_name=''
     ),
-    interval,
-    html.Br(),
-    html.Div(id='my-output'),
+    interval
 ])
 
 # CALLBACKS ###
