@@ -389,14 +389,13 @@ def display_balances(valid, value, n):
         memo_value_show = f'${memo_value:,.2f}'
         wmemo_value = float(wmemo_bal) * float(wmemo_price)
         wmemo_value_show = f'${wmemo_value:,.2f}'
+        total_value = time_value + memo_value + wmemo_value
+        total_value_show = f'Total Value = ${total_value:,.2f}'
     else:
         time_value_show = '$0'
         memo_value_show = '$0'
         wmemo_value_show = '$0'
-
-    # Calculate total value
-    total_value = time_value + memo_value + wmemo_value
-    total_value_show = f'Total Value = ${total_value:,.2f}'
+        total_value_show = '$0'
 
     # Return values
     return (time_bal_show, memo_bal_show, wmemo_bal_show, time_price_show,
